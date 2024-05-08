@@ -60,11 +60,9 @@ io.on('connection', (client) => {
     );
     game.addTank({ id: client.id, x: 100, y: 100 });
     console.log(game)
-
   })
   client.on('disconnect', () => {
     game.deleteTank(client.id)
-    console.log(client.id)
   })
 }
 )

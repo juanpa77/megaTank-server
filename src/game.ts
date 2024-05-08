@@ -13,6 +13,6 @@ export class Game {
   }
 
   deleteTank(id: string) {
-    this.tanks.filter(tank => tank.id !== id)
+    this.tanks = this.tanks.filter(tank => tank.id !== id)
   }
 }
