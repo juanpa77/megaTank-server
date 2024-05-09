@@ -31,6 +31,11 @@ server.listen(PORT, () => {
 interface Tank {
   id: string;
 }
+interface Player {
+  id: string;
+  x: number;
+  y: number;
+}
 const game = new Game()
 
 /* Connection events */
@@ -63,6 +68,27 @@ io.on('connection', (client) => {
   client.on('disconnect', () => {
     game.deleteTank(client.id)
     client.broadcast.emit('playerDisconnected', client.id)
+  })
+
+  // client.on('updatePlayer', ({ x, y, id }: Player) => {
+
+  //   game.tanks = game.tanks.map(tank => {
+  //     if (tank.id === id) {
+  //       return {
+  //         ...tank,
+  //         x,
+  //         y,
+  //       }
+  //     }
+  //     return {
+  //       ...tank
+  //     }
+  //   })
+  // })
+
+  client.on('updatePlayer', (player: Player) => {
+    client.broadcast.emit('updateEnemies', player)
+
   })
 }
 )
