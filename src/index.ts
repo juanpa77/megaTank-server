@@ -36,12 +36,13 @@ const game = new Game()
 /* Connection events */
 io.on('connection', (client) => {
   console.log('User connected');
+  client.emit('getPlayers', game.tanks)
 
-  client.on('joinGame', (tank: Tank) => {
-    console.log(tank.id + ' joined the game');
-    const initX = 100;
+  client.on('joinGame', () => {
+    console.log(client.id + ' joined the game');
+    const initX = 200;
     const initY = 100;
-    client.emit('addTank',
+    client.emit('joinGame',
       {
         id: client.id,
         isLocal: true,
@@ -49,8 +50,7 @@ io.on('connection', (client) => {
         y: initY
       }
     );
-
-    client.broadcast.emit('addTank',
+    client.broadcast.emit('joinGame',
       {
         id: client.id,
         isLocal: false,
@@ -58,11 +58,11 @@ io.on('connection', (client) => {
         y: initY
       }
     );
-    game.addTank({ id: client.id, x: 100, y: 100 });
-    console.log(game)
+    game.addTank({ id: client.id, x: 200, y: 100 });
   })
   client.on('disconnect', () => {
     game.deleteTank(client.id)
+    client.broadcast.emit('playerDisconnected', client.id)
   })
 }
 )
