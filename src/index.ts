@@ -88,7 +88,10 @@ io.on('connection', (client) => {
 
   client.on('updatePlayer', (player: Player) => {
     client.broadcast.emit('updateEnemies', player)
+  })
 
+  client.on('shot', (playerId: string) => {
+    client.broadcast.emit('enemyShot', playerId)
   })
 }
 )
