@@ -3,7 +3,7 @@ import express from "express";
 import { createServer } from 'node:http';
 import { Server } from 'socket.io';
 import { Game } from "./game";
-
+import { Map } from "./map";
 const app = express()
 
 const PORT = process.env.PORT || 3000
@@ -37,20 +37,16 @@ server.listen(PORT, () => {
   console.log('server running at http://localhost:3000');
 });
 
-interface Tank {
-  id: string;
-}
 interface Player {
   id: string;
   x: number;
   y: number;
 }
-const game = new Game()
 
 /* Connection events */
 io.on('connection', (client) => {
   console.log('User connected');
-  client.emit('getPlayers', game.tanks)
+  // client.emit('getPlayers', game.tanks)
 
   client.on('joinGame', () => {
     console.log(client.id + ' joined the game');
@@ -72,28 +68,12 @@ io.on('connection', (client) => {
         y: initY
       }
     );
-    game.addTank({ id: client.id, x: 200, y: 100 });
+    // game.addTank({ id: client.id, x: 200, y: 100 });
   })
   client.on('disconnect', () => {
-    game.deleteTank(client.id)
+    // game.deleteTank(client.id)
     client.broadcast.emit('playerDisconnected', client.id)
   })
-
-  // client.on('updatePlayer', ({ x, y, id }: Player) => {
-
-  //   game.tanks = game.tanks.map(tank => {
-  //     if (tank.id === id) {
-  //       return {
-  //         ...tank,
-  //         x,
-  //         y,
-  //       }
-  //     }
-  //     return {
-  //       ...tank
-  //     }
-  //   })
-  // })
 
   client.on('updatePlayer', (player: Player) => {
     client.broadcast.emit('updateEnemies', player)
@@ -104,3 +84,5 @@ io.on('connection', (client) => {
   })
 }
 )
+const map = new Map()
+const game = new Game(map, io)

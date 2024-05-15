@@ -1,18 +1,48 @@
+import { Direction, Player } from "./player";
+import { Map } from "./map";
+// import EventLoop from "./events";
 import { Tank } from "./Tank";
+import { VELOCITY } from "./const";
+import { Server } from "socket.io";
 
 export class Game {
-  tanks: Tank[];
+  // private _previousElapsed = 0;
+  map: Map
+  socket: Server
+  // eventLoop: EventLoop;
+  players!: Player[];
 
-  constructor() {
-    this.tanks = [];
+  constructor(map: Map, socket: Server) {
+    this.map = map
+    this.socket = socket
+    // this.eventLoop = new EventLoop(this.socket, this)
   }
 
-  addTank({ id, x, y }: { id: string, x: number, y: number }) {
-    const newTank = new Tank(id, x, y)
-    this.tanks.push(newTank)
+  getPlayer(id: string) {
+    return this.players.find(player => player.id === id)
+  }
+  deletePlayer(id: string | undefined) {
+    this.players = this.players.filter(player => player.id !== id)
   }
 
-  deleteTank(id: string) {
-    this.tanks = this.tanks.filter(tank => tank.id !== id)
+
+  update() {
+    // this.player && this.player.moveTank(delta)
+  }
+
+  createPlayer(x: number, y: number, id: string) {
+    const tank = new Tank({
+      x,
+      y,
+      speed: VELOCITY
+    })
+    const player = new Player({
+      id,
+      tank,
+      map: this.map
+    })
+    this.players.push(player)
   }
 }
+
+// TODO ADD FEATURE TO SYNC UP SHOOT OF ENEMY
