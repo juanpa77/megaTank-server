@@ -9,6 +9,10 @@ const app = express()
 const PORT = process.env.PORT || 3000
 const urlOrigin = "http://localhost:5173"
 
+// TODO  research require('http') implementation in game tutorial 
+//  it is responsible for different networking request HTTP  
+// use http.createServer(app)
+
 const cors = {
   origin: urlOrigin,
   methods: ["GET", "POST"],
@@ -17,6 +21,11 @@ const cors = {
 }
 
 const server = createServer(app);
+
+// TODO implementation in game tutorial 
+// add {pingInterval: 2000, pingTimeout: 5000} in argument 
+// new Server({pingInterval: 2000, pingTimeout: 5000})
+// to handle disconnect player to improve response of server
 
 const io = new Server(server, { cors });
 
